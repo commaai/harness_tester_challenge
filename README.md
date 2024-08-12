@@ -40,4 +40,4 @@ The web views are made possible thanks to [KiCanvas](https://kicanvas.org/)!
 
 The board is designed in [KiCad 8](https://www.kicad.org/), a free and open source EDA tool. The full project is available in an [exported archive](./kicad_project.zip).
 
-There are a handful of intentional, show-stopping bugs hidden in each part (we're not looking for potential points of improvement). Find them, and send them over to us for verification!
+There are a handful of intentional, show-stopping bugs hidden in each part (we're not looking for potential points of improvement). Find them, and [send](https://forms.gle/US88Hg7UR6bBuW3BA) them over to us for verification!
