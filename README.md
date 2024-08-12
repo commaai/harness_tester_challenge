@@ -1,5 +1,17 @@
-# Harness Tester Challenge
-We (mock) designed a simple harness testing PCB and wrote some firmware for it. Unfortunatly, this board was designed and firmware was written on a Monday morning.
+<div align="center">
+<h1>Harness Tester Challenge</h1>
+<h3>
+  <a href="https://comma.ai/leaderboard">Leaderboard</a>
+  <span> · </span>
+  <a href="https://comma.ai/jobs">comma.ai/jobs</a>
+  <span> · </span>
+  <a href="https://discord.comma.ai">Discord</a>
+  <span> · </span>
+  <a href="https://x.com/comma_ai">X</a>
+</h3>
+</div>
+
+We (mock) designed a simple harness testing PCB and wrote some firmware for it. Unfortunately, this board was designed and firmware was written on a Monday morning.
 
 Can you figure out everything wrong with it?
 
