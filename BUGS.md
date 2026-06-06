@@ -29,17 +29,38 @@ attempt to fix the design.
    the tester reads and drives the wrong pins for half the connector and never
    scans the last four harness pins.
 
-5. The GNSS RF chain is not a usable 50 ohm RF layout.
+5. The `MAX2679` LNA is powered outside its rated supply range.
+   `U5` `Vcc` is connected to `U3` `VCC_RF`. With the NEO-M8N powered from
+   `+3.3V`, `VCC_RF` is approximately `VCC - 0.1V`, but the `MAX2679` is a
+   1.08 V to 1.98 V part with a 2.2 V absolute maximum supply rating. The LNA
+   is therefore over-volted in normal operation.
+
+6. The `MAX2679` RF input is not connected with the required input network.
+   `AE1` is connected directly to `U5` `RFIN`, while the only series inductor
+   and capacitor are on the `RFOUT` side between `U5` and `U3`. The `MAX2679`
+   datasheet requires a DC-blocking capacitor and external matching components
+   at `RFIN`, so the LNA input match is missing even before considering PCB
+   layout.
+
+7. The GNSS RF chain is not a usable 50 ohm RF layout.
    The antenna, LNA, matching parts, and module input are connected with tiny
    discrete parts and ordinary board routing rather than a controlled-impedance
    feed with a clear ground reference and keepout strategy. This makes GPS lock
    unreliable even if the UART is fixed.
 
-6. The ceramic GNSS antenna placement is mechanically and electrically poor.
+8. The ceramic GNSS antenna placement is mechanically and electrically poor.
    The antenna is crowded directly under the Teensy/module area in the board
    render, with nearby copper and components in the keepout area. A patch
    antenna needs a deliberate ground-plane and keepout implementation, not
    overlap with the controller module.
+
+9. The high-side P-channel MOSFET gate is not protected against excessive
+   `Vgs`.
+   `Q1` source is on `+12V`, its gate is pulled to `GND` through `R1`, and
+   `D2` is a 100 V Schottky from source to gate. That diode does not clamp the
+   negative gate-source voltage during a positive input transient; with a
+   typical P-channel MOSFET `Vgs` absolute maximum of +/-20 V, the TVS input
+   clamp can still leave the gate oxide over-stressed.
 
 ## Firmware
 
@@ -47,63 +68,70 @@ attempt to fix the design.
    The I2C bus is never started, the expander reset pin is never configured, and
    the device ID is never checked before `loop()` starts using the expander.
 
-2. `CY8C9560::begin()` leaves the expander held in reset.
-   `RESET_N` is active low, but `begin()` drives it high, then low, and never
-   returns it high. Even if `begin()` were called, the expander would remain in
-   reset.
+2. The status LED pins are never configured as outputs.
+   `set_status(BUSY)` is called before any LED GPIO setup, and
+   `PIN_LED_R`, `PIN_LED_G`, and `PIN_LED_B` never get `pinMode(..., OUTPUT)`.
+   On Arduino-style GPIO, `digitalWrite()` on an input pin changes input
+   pull-up state rather than actively driving the LED.
 
 3. The GNSS control pins are written without being configured as outputs.
    `PIN_UBX_SAFEBOOT` and `PIN_UBX_RST_N` get `digitalWrite()` calls in
    `setup()`, but no `pinMode(..., OUTPUT)`. On Arduino-style GPIO this sets
    input state or pullups rather than actively controlling the GNSS module.
 
-4. The test button logic is inverted.
+4. `SAFEBOOT_N` is driven toward the wrong state for normal GNSS operation.
+   The NEO-M8 datasheet marks `SAFEBOOT_N` as a service/update pin to leave
+   open. The firmware writes `PIN_UBX_SAFEBOOT` low; if the missing output
+   configuration were added, that would assert safeboot instead of normal
+   receiver operation.
+
+5. The test button logic is inverted.
    The schematic pulls `BTN_TEST` up through `R4` and the switch shorts it to
    ground when pressed. Firmware returns when the pin is low and starts a test
    when it is high, so it tests while the button is not pressed.
 
-5. The pass/fail accumulator cannot represent "all rows must pass".
+6. The pass/fail accumulator cannot represent "all rows must pass".
    `passed` starts as `false` and becomes `true` when any one pin's measured
    connections match. It is never cleared on a later mismatch, so a harness can
    pass with only one correct row.
 
-6. The harness bit operations use 32-bit shifts.
+7. The harness bit operations use 32-bit shifts.
    `1 << i` and `1 << j` are used while `i` and `j` can exceed 31. Those shifts
    overflow or become undefined before being widened to `uint64_t`, breaking all
    upper harness pins.
 
-7. The expander output pin is immediately changed back to input.
+8. The expander output pin is immediately changed back to input.
    The loop calls `cy.set_output(output_mask, output_mask)` and then
    `cy.set_pd_inputs(~output_mask)`. `set_pd_inputs()` writes
    `REG_PIN_DIRECTION` to `0xFF` for every port, including the port containing
    the intended output, so no pin is left actively driving the harness.
 
-8. `set_output()` and the input helper methods change entire ports, not just
+9. `set_output()` and the input helper methods change entire ports, not just
    the requested pins.
    `set_output()` writes `REG_PIN_DIRECTION` as `0x00` for each port, and the
    input helpers write `0xFF` for each port. The `pins` mask is only used for
    drive-mode registers, so unrelated expander pins are repeatedly reconfigured.
 
-9. The firmware ignores the physical expander-to-header mapping.
-   Even aside from the 32-bit shifts, `read_inputs()` returns raw CY8C9560 port
-   bits. The code compares those raw bits directly against `EXPECTED_CONNECTIONS`
-   indexed by harness pin number, so `CBL_20..CBL_39` are compared against the
-   wrong matrix columns.
+10. The firmware ignores the physical expander-to-header mapping.
+    Even aside from the 32-bit shifts, `read_inputs()` returns raw CY8C9560 port
+    bits. The code compares those raw bits directly against
+    `EXPECTED_CONNECTIONS` indexed by harness pin number, so `CBL_20..CBL_39`
+    are compared against the wrong matrix columns.
 
-10. `nmea_buf` can overflow on normal NMEA traffic.
+11. `nmea_buf` can overflow on normal NMEA traffic.
     The buffer is 64 bytes, there is no bounds check while reading, and
     `process_nmea()` writes `buf[len] = 0`. RMC sentences are commonly longer
     than this, so the GPS parser can corrupt memory before reaching a newline.
 
-11. The parser only accepts `$GPRMC`.
+12. The parser only accepts `$GPRMC`.
     Multi-constellation u-blox modules commonly emit `$GNRMC`; those sentences
     are ignored, so time lock can fail even when the module has valid time.
 
-12. The parser accepts invalid RMC status.
+13. The parser accepts invalid RMC status.
     The RMC status field is discarded with `%*c`, so a void fix can still mark
     `time_fixed = true` and allow test results to be logged with invalid time.
 
-13. `CY8C9560::read_register()` and `read_registers()` do not check I2C return
+14. `CY8C9560::read_register()` and `read_registers()` do not check I2C return
     values.
     Failed transactions still call `WIRE.read()` and use whatever value is
     returned, making a disconnected or wedged expander look like real pin data.
