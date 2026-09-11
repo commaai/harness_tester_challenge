@@ -1,0 +1,185 @@
+(footprint "ANT-GNSSCP-TH25L1"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -0.5 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "779bc514-c353-4f65-a330-7c3fc4427575")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "ANT-GNSSCP-TH25L1"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "9d03562c-82e9-43f0-b7b7-a759ede3ddf3")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" "ANT-GNSSCP-TH25L1"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "848f0dc6-cd4c-49e1-a2b6-26aabe815584")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "277e0959-cd94-44f6-84be-6036b6c1c938")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "827fc241-249c-4715-947a-33b7b4a97935")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_line
+		(start -12.5 -8.5)
+		(end -12.5 8.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "dcf21102-e6b3-4e4b-8e4e-008522ecb79f")
+	)
+	(fp_line
+		(start -8.5 12.5)
+		(end 8.5 12.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "ee128e48-dc3b-4dde-8e1a-1c9491f99ba0")
+	)
+	(fp_line
+		(start 8.5 -12.5)
+		(end -8.5 -12.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "bc936419-1455-4842-bc5b-9ba9f12562b0")
+	)
+	(fp_line
+		(start 12.5 -8.5)
+		(end 12.5 8.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "00a14d07-483f-4740-ae5d-07cbfb9453f4")
+	)
+	(fp_arc
+		(start -12.5 -8.5)
+		(mid -11.328427 -11.328427)
+		(end -8.5 -12.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "449eef2a-2ff7-40a2-b5f2-85a95675975b")
+	)
+	(fp_arc
+		(start -8.5 12.5)
+		(mid -11.328427 11.328427)
+		(end -12.5 8.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "6a560940-2ff5-424d-8f8f-93661d3d852e")
+	)
+	(fp_arc
+		(start 8.5 -12.5)
+		(mid 11.328427 -11.328427)
+		(end 12.5 -8.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "1541305a-1d5f-4dc6-bdae-616dc7e7ccdc")
+	)
+	(fp_arc
+		(start 12.5 8.5)
+		(mid 11.328427 11.328427)
+		(end 8.5 12.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "9ddb5c9a-8ef4-47df-a3ca-397e3913a68b")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "061f6931-aa70-47af-8eda-2073449a90ae")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole circle
+		(at 0 2.5)
+		(size 2 2)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "dd7a7a91-67ec-47b4-9d7c-5cf577ae8afb")
+	)
+	(model "${KIPRJMOD}/libraries/ANT-GNSSCP-TH25L1--3DModel-STEP-418109.STEP"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

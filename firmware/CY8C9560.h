@@ -25,23 +25,25 @@
 #define DRIVE_MODE_HIGH_IMPEDANCE 0x06
 
 class CY8C9560 {
-public:
+private:
+  bool read_register(uint8_t reg, uint8_t &value);
+  bool read_registers(uint8_t reg_base, uint8_t len, uint64_t &registers); // limited to 8 bytes
+
+  bool write_register(uint8_t reg, uint8_t data);
+  bool write_registers(uint8_t reg_base, uint64_t data, uint8_t len); // limited to 8 bytes
+  
   uint8_t addr;
+public:
 
   constexpr CY8C9560(uint8_t addr = CY8C9560_ADDR) : addr(addr) { }
   bool begin();
-  uint8_t read_register(uint8_t reg);
-  uint64_t read_registers(uint8_t reg_base, uint8_t len); // limited to 8 bytes
 
-  void write_register(uint8_t reg, uint8_t data);
-  void write_registers(uint8_t reg_base, uint64_t data, uint8_t len); // limited to 8 bytes
+  bool read_id(uint8_t &id);
+  bool read_inputs(uint64_t &inputs);
 
-  uint8_t read_id();
-  uint64_t read_inputs();
-
-  void set_pd_inputs(uint64_t pins);
-  void set_pu_inputs(uint64_t pins);
-  void set_output(uint64_t pins, uint64_t values);
+  bool set_pd_inputs(uint64_t pins);
+  bool set_pu_inputs(uint64_t pins);
+  bool set_output(uint64_t pins, uint64_t values);
 };
 
 #endif

@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "teensy")(type "Legacy")(uri "${KIPRJMOD}/libraries/teensy.lib")(options "")(descr ""))
+  (lib (name "CY8C9560A")(type "KiCad")(uri "${KIPRJMOD}/libraries/CY8C9560A.kicad_sym")(options "")(descr ""))
+)
